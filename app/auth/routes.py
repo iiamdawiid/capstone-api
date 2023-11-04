@@ -35,11 +35,14 @@ def handle_register():
         }
         return response, 400
     
-    # if not isinstance(password, str):
-    #     password = str(password)
-
-    user = User(username=username, password=str(password))
-    user.create()
+    # check to see if user entered an email and if so store it in database
+    email = body.get('email')
+    if email:
+        user = User(email=email, username=username, password=str(password))
+        user.create()
+    else:
+        user = User(username=username, password=str(password))
+        user.create()
 
     response = {
         "message": "user successfully registered.",
@@ -55,45 +58,77 @@ def handle_login():
 
     if body is None:
         response = {
-            "message": "username and password are required to login."
+            "message": "username and password are required to login or email and password."
         }
         return response, 400
-    
-    username = body.get('username')
-    if username is None:
-        response = {
-            "message": "username is required to login."
-        }
-        return response, 400
-    
-    password = body.get('password')
-    if password is None:
-        response = {
-            "message": "password is required to login."
-        }
-        return response, 400
-    
-    user = User.query.filter_by(username=username).one_or_none()
-    if user is None:
-        response = {
-            "message": "account does not exist. register or try again."
-        }
-        return response, 400
-    
-    ok = user.compare_password(password)
-    if not ok:
-        response = {
-            "message": "invalid credentials. please try again."
-        }
-        return response, 401
-    
-    auth_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
 
-    response = make_response({
-        "message": "successfully logged in.",
-        "token": auth_token,
-        "user": user.to_response()
-    })
+    email = body.get('email')   
 
-    response.headers["Authorization"] = f"Bearer {auth_token}"
-    return response, 200
+    if username and email is None:
+        username = body.get('username')
+        
+        password = body.get('password')
+        if password is None:
+            response = {
+                "message": "password is required to login."
+            }
+            return response, 400
+        
+        user = User.query.filter_by(username=username).one_or_none()
+        if user is None:
+            response = {
+                "message": "account does not exist. register or try again."
+            }
+            return response, 400
+        
+        ok = user.compare_password(password)
+        if not ok:
+            response = {
+                "message": "invalid credentials. please try again."
+            }
+            return response, 401
+        
+        auth_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
+
+        response = make_response({
+            "message": "successfully logged in.",
+            "token": auth_token,
+            "user": user.to_response()
+        })
+
+        response.headers["Authorization"] = f"Bearer {auth_token}"
+        return response, 200
+    
+    elif email and username is None:
+        password = body.get('password')
+
+        if password is None:
+            response = {
+                "message": "password is required to login."
+            }
+            return password, 400
+        
+        user = User.query.filter_by(email=email).one_or_none()
+        if user is None:
+            response = {
+                "message": "account does not exist. register or try again."
+            }
+            return response, 400
+        
+        ok = user.compare_password(password)
+        if not ok:
+            response = {
+                "message": "invalid credentials. please try again."
+            }
+            return response, 401
+        
+        auth_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
+        
+        response = make_response({
+            "message": "successfully logged in.",
+            "token": auth_token,
+            "user": user.to_response()
+        })
+
+        response.headers["Authorization"] = f"Bearer {auth_token}"
+        return response, 200

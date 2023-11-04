@@ -7,12 +7,14 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.String(64), primary_key=True)
+    email = db.Column(db.String(50), nullable=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(256), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    def __init__(self, username, password):
+    def __init__(self, email, username, password):
         self.id = str(uuid4())
+        self.email = email
         self.username = username
         self.password = generate_password_hash(password)
 
@@ -38,6 +40,7 @@ class User(db.Model):
     def to_response(self):
         return {
             "id": self.id,
+            "email": self.email,
             "username": self.username,
             "password": self.password,
             "date_created": self.date_created,
