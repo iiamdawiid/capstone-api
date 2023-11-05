@@ -63,10 +63,9 @@ def handle_login():
         return response, 400
 
     email = body.get('email')   
+    username = body.get('username')
 
     if username and email is None:
-        username = body.get('username')
-        
         password = body.get('password')
         if password is None:
             response = {
