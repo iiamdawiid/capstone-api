@@ -45,3 +45,41 @@ class User(db.Model):
             "password": self.password,
             "date_created": self.date_created,
         }
+    
+class CalorieCalculator(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+    gender = db.Column(db.String(6), nullable=False)
+    activity_level = db.Column(db.String(30), nullable=False)
+    weight = db.Column(db.Integer, nullable=False)
+    height = db.Column(db.Integer, nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    saved_at = db.Column(db.DateTime, default = datetime.utcnow)
+    saved_by = db.Column(db.String(64), db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, gender, activity_level, weight, height, age, saved_by):
+        self.gender = gender
+        self.activity_level = activity_level
+        self.weight = weight
+        self.height = height
+        self.age = age
+        self.saved_by = saved_by
+
+    def create(self):
+        db.session.add()
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def to_reponse(self):
+        return {
+            "id": self.id,
+            "gender": self.gender,
+            "activity_level": self.activity_level,
+            "weight": self.weight,
+            "height": self.height,
+            "age": self.age,
+            "saved_at": self.saved_at,
+            "saved_by": self.saved_by
+        }
