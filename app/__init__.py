@@ -27,3 +27,6 @@ def user_lookup_callback(_jwt_header, jwt_data):
 
 from .auth import auth_blueprint
 app.register_blueprint(auth_blueprint)
+
+from .calorie_calculator import calorie_calculator_blueprint
+app.register_blueprint(calorie_calculator_blueprint)

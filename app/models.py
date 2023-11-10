@@ -12,6 +12,8 @@ class User(db.Model):
     password = db.Column(db.String(256), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    calorie_calculator = db.relationship('CalorieCalculator', backref='user')
+    
     def __init__(self, email, username, password):
         self.id = str(uuid4())
         self.email = email
@@ -50,13 +52,14 @@ class CalorieCalculator(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     gender = db.Column(db.String(6), nullable=False)
     activity_level = db.Column(db.String(30), nullable=False)
-    weight = db.Column(db.Integer, nullable=False)
-    height = db.Column(db.Integer, nullable=False)
+    weight = db.Column(db.String(10), nullable=False)
+    height = db.Column(db.String(10), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     saved_at = db.Column(db.DateTime, default = datetime.utcnow)
     saved_by = db.Column(db.String(64), db.ForeignKey('user.id'), nullable=False)
 
     def __init__(self, gender, activity_level, weight, height, age, saved_by):
+        self.id = str(uuid4())
         self.gender = gender
         self.activity_level = activity_level
         self.weight = weight
@@ -65,14 +68,14 @@ class CalorieCalculator(db.Model):
         self.saved_by = saved_by
 
     def create(self):
-        db.session.add()
+        db.session.add(self)
         db.session.commit()
 
     def delete(self):
         db.session.delete(self)
         db.session.commit()
 
-    def to_reponse(self):
+    def to_response(self):
         return {
             "id": self.id,
             "gender": self.gender,
