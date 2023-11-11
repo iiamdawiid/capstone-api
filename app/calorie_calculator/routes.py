@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, current_user
 from ..models import CalorieCalculator
 
 @c.post('/save_calories_google')
-@jwt_required()
+# @jwt_required() temp
 def handle_googleuser_save():
     body = request.json
 
