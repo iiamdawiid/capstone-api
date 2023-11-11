@@ -1,5 +1,5 @@
 from . import auth_blueprint as auth
-from flask import request, make_response
+from flask import request, make_response, jsonify
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from ..models import User
@@ -149,3 +149,15 @@ def handle_login():
 
         response.headers["Authorization"] = f"Bearer {auth_token}"
         return response, 200
+    
+@auth.post('/token_creation')
+def handle_token():
+    try:
+        request_data = request.get_json()
+        user_id = request_data.get('user_id')
+
+        auth_token = create_access_token(identity=user_id, expires_delta=timedelta(days=1))
+
+        return jsonify({"auth_token": auth_token}), 200
+    except Exception as e:
+        return jsonify({"Error": "Internal Server Error"}), 500
