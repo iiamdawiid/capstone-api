@@ -30,3 +30,6 @@ app.register_blueprint(auth_blueprint)
 
 from .calorie_calculator import calorie_calculator_blueprint
 app.register_blueprint(calorie_calculator_blueprint)
+
+from .onerepmax import onerepmax_blueprint
+app.register_blueprint(onerepmax_blueprint)

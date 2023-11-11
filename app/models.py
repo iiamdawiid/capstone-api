@@ -66,7 +66,7 @@ class CalorieCalculator(db.Model):
     lose_weight2 = db.Column(db.Integer, nullable=False)
     lose_weight3 = db.Column(db.Integer, nullable=False)
 
-    saved_at = db.Column(db.DateTime, default = datetime.utcnow)
+    saved_at = db.Column(db.DateTime, default=datetime.utcnow)
     saved_by = db.Column(db.String(64), db.ForeignKey('user.id'), nullable=False)
 
     def __init__(self, gender, activity_level, weight, height, age, units, calories, gain_weight1, gain_weight2, gain_weight3, lose_weight1, lose_weight2, lose_weight3, saved_by):
@@ -131,7 +131,7 @@ class OneRepMax(db.Model):
     percentage7 = db.Column(db.Integer, nullable=False)
     percentage8 = db.Column(db.Integer, nullable=False)
 
-    saved_at = db.Column(db.DateTime, nullable=False)
+    saved_at = db.Column(db.DateTime, default=datetime.utcnow)
     saved_by = db.Column(db.String(64), db.ForeignKey('user.id'), nullable=False)
 
     def __init__(

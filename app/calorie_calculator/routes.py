@@ -1,6 +1,6 @@
 from . import calorie_calculator_blueprint as c
-from flask import request, jsonify
-from flask_jwt_extended import jwt_required, current_user, get_jwt_identity
+from flask import request
+from flask_jwt_extended import jwt_required, current_user
 from ..models import CalorieCalculator
 
 @c.post('/save_calories')
@@ -10,7 +10,7 @@ def handle_save_calories():
 
     if body is None:
         response = {
-            "message": "invalid request"
+            "message": "Invalid request"
         }
         return response, 400
     
