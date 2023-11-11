@@ -113,6 +113,72 @@ class CalorieCalculator(db.Model):
             "saved_at": self.saved_at,
             "saved_by": self.saved_by
         }
+
+# for users signing in with google 
+class GoogleCalorieCalculator(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+    gender = db.Column(db.String(6), nullable=False)
+    activity_level = db.Column(db.String(30), nullable=False)
+    weight = db.Column(db.Integer, nullable=False)
+    height = db.Column(db.Integer, nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    units = db.Column(db.String(10), nullable=False)
+    calories = db.Column(db.Integer, nullable=False)
+
+    gain_weight1 = db.Column(db.Integer, nullable=False)
+    gain_weight2 = db.Column(db.Integer, nullable=False)
+    gain_weight3 = db.Column(db.Integer, nullable=False)
+    lose_weight1 = db.Column(db.Integer, nullable=False)
+    lose_weight2 = db.Column(db.Integer, nullable=False)
+    lose_weight3 = db.Column(db.Integer, nullable=False)
+
+    saved_at = db.Column(db.DateTime, default = datetime.utcnow)
+    saved_by = db.Column(db.String(64), nullable=False)
+
+    def __init__(self, gender, activity_level, weight, height, age, units, calories, gain_weight1, gain_weight2, gain_weight3, lose_weight1, lose_weight2, lose_weight3, saved_by):
+        self.id = str(uuid4())
+        self.gender = gender
+        self.activity_level = activity_level
+        self.weight = weight
+        self.height = height
+        self.age = age
+        self.units = units
+        self.calories = calories
+        self.gain_weight1 = gain_weight1
+        self.gain_weight2 = gain_weight2
+        self.gain_weight3 = gain_weight3
+        self.lose_weight1 = lose_weight1
+        self.lose_weight2 = lose_weight2
+        self.lose_weight3 = lose_weight3
+        self.saved_by = saved_by
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def to_response(self):
+        return {
+            "id": self.id,
+            "gender": self.gender,
+            "activity_level": self.activity_level,
+            "weight": self.weight,
+            "height": self.height,
+            "age": self.age,
+            "units": self.units,
+            "calories": self.calories,
+            "gain_weight1": self.gain_weight1,
+            "gain_weight2": self.gain_weight2,
+            "gain_weight3": self.gain_weight3,
+            "lose_weight1": self.lose_weight1,
+            "lose_weight2": self.lose_weight2,
+            "lose_weight3": self.lose_weight3,
+            "saved_at": self.saved_at,
+            "saved_by": self.saved_by
+        }
     
 class OneRepMax(db.Model):
     id = db.Column(db.String(64), primary_key=True)

@@ -1,10 +1,11 @@
 from . import calorie_calculator_blueprint as c
 from flask import request
 from flask_jwt_extended import jwt_required, current_user
-from ..models import CalorieCalculator
+from ..models import CalorieCalculator, GoogleCalorieCalculator
 
+# for users that signed in with google
 @c.post('/save_calories_google')
-# @jwt_required() temp
+@jwt_required()
 def handle_googleuser_save():
     body = request.json
 
@@ -29,7 +30,7 @@ def handle_googleuser_save():
     lose_weight2 = body.get('lose_weight2')
     lose_weight3 = body.get('lose_weight3')
 
-    saved_calories = CalorieCalculator(
+    saved_calories = GoogleCalorieCalculator(
         gender=gender, activity_level=activity_level, weight=weight, height=height, 
         age=age, units=units, calories=calories, gain_weight1=gain_weight1, gain_weight2=gain_weight2, 
         gain_weight3=gain_weight3, lose_weight1=lose_weight1, lose_weight2=lose_weight2, 
@@ -44,6 +45,7 @@ def handle_googleuser_save():
     }
     return response, 201
 
+# for users who created accounts
 @c.post('/save_calories')
 @jwt_required()
 def handle_save_calories():
@@ -83,7 +85,6 @@ def handle_save_calories():
         "calories": saved_calories.to_response()
     }
     return response, 201
-
 
 
 @c.delete('/delete_calories/<save_id>')

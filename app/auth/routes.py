@@ -154,9 +154,9 @@ def handle_login():
 def handle_token():
     try:
         request_data = request.get_json()
-        user_id = request_data.get('user_id')
+        google_user_id = request_data.get('google_user_id')
 
-        auth_token = create_access_token(identity=user_id, expires_delta=timedelta(days=1))
+        auth_token = create_access_token(identity=google_user_id, expires_delta=timedelta(days=1))
 
         return jsonify({"auth_token": auth_token}), 200
     except Exception as e:
