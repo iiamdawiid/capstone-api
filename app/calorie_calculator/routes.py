@@ -35,7 +35,7 @@ def handle_save_calories():
         gender=gender, activity_level=activity_level, weight=weight, height=height, 
         age=age, units=units, calories=calories, gain_weight1=gain_weight1, gain_weight2=gain_weight2, 
         gain_weight3=gain_weight3, lose_weight1=lose_weight1, lose_weight2=lose_weight2, 
-        lose_weight3=lose_weight3, saved_by=saved_by
+        lose_weight3=lose_weight3, saved_by=current_user.id
         )
     
     saved_calories.create()
@@ -69,4 +69,4 @@ def handle_calorie_delete(save_id):
     response = {
         "message": "saved calories successfully deleted"
     }
-    return response, 200
+    return response, 200 
