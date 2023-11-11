@@ -3,7 +3,46 @@ from flask import request
 from flask_jwt_extended import jwt_required, current_user
 from ..models import CalorieCalculator
 
+@c.post('/save_calories_google')
+@jwt_required()
+def handle_googleuser_save():
+    body = request.json
 
+    if body is None:
+        response = {
+            "message": "invalid request"
+        }
+        return response, 400
+    
+    google_user_id = body.get('google_user_id')
+    gender = body.get('gender')
+    activity_level = body.get('activity_level')
+    weight = body.get('weight')
+    height = body.get('height')
+    age = body.get('age')
+    units = body.get('units')
+    calories = body.get('calories')
+    gain_weight1 = body.get('gain_weight1')
+    gain_weight2 = body.get('gain_weight2')
+    gain_weight3 = body.get('gain_weight3')
+    lose_weight1 = body.get('lose_weight1')
+    lose_weight2 = body.get('lose_weight2')
+    lose_weight3 = body.get('lose_weight3')
+
+    saved_calories = CalorieCalculator(
+        gender=gender, activity_level=activity_level, weight=weight, height=height, 
+        age=age, units=units, calories=calories, gain_weight1=gain_weight1, gain_weight2=gain_weight2, 
+        gain_weight3=gain_weight3, lose_weight1=lose_weight1, lose_weight2=lose_weight2, 
+        lose_weight3=lose_weight3, saved_by=google_user_id
+        )
+    
+    saved_calories.create()
+
+    response = {
+        "message": "calories successfully saved",
+        "calories": saved_calories.to_response()
+    }
+    return response, 201
 
 @c.post('/save_calories')
 @jwt_required()
@@ -29,7 +68,6 @@ def handle_save_calories():
     lose_weight1 = body.get('lose_weight1')
     lose_weight2 = body.get('lose_weight2')
     lose_weight3 = body.get('lose_weight3')
-    saved_by = body.get('saved_by')
 
     saved_calories = CalorieCalculator(
         gender=gender, activity_level=activity_level, weight=weight, height=height, 
