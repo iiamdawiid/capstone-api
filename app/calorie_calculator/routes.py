@@ -1,51 +1,8 @@
 from . import calorie_calculator_blueprint as c
-from flask import request
-from flask_jwt_extended import jwt_required, current_user
-from ..models import CalorieCalculator, GoogleCalorieCalculator
+from flask import request, jsonify
+from flask_jwt_extended import jwt_required, current_user, get_jwt_identity
+from ..models import CalorieCalculator
 
-# for users that signed in with google
-@c.post('/save_calories_google')
-@jwt_required()
-def handle_googleuser_save():
-    body = request.json
-
-    if body is None:
-        response = {
-            "message": "invalid request"
-        }
-        return response, 400
-    
-    google_user_id = body.get('google_user_id')
-    gender = body.get('gender')
-    activity_level = body.get('activity_level')
-    weight = body.get('weight')
-    height = body.get('height')
-    age = body.get('age')
-    units = body.get('units')
-    calories = body.get('calories')
-    gain_weight1 = body.get('gain_weight1')
-    gain_weight2 = body.get('gain_weight2')
-    gain_weight3 = body.get('gain_weight3')
-    lose_weight1 = body.get('lose_weight1')
-    lose_weight2 = body.get('lose_weight2')
-    lose_weight3 = body.get('lose_weight3')
-
-    saved_calories = GoogleCalorieCalculator(
-        gender=gender, activity_level=activity_level, weight=weight, height=height, 
-        age=age, units=units, calories=calories, gain_weight1=gain_weight1, gain_weight2=gain_weight2, 
-        gain_weight3=gain_weight3, lose_weight1=lose_weight1, lose_weight2=lose_weight2, 
-        lose_weight3=lose_weight3, saved_by=google_user_id
-        )
-    
-    saved_calories.create()
-
-    response = {
-        "message": "calories successfully saved",
-        "calories": saved_calories.to_response()
-    }
-    return response, 201
-
-# for users who created accounts
 @c.post('/save_calories')
 @jwt_required()
 def handle_save_calories():
