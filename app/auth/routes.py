@@ -1,8 +1,12 @@
 from . import auth_blueprint as auth
-from flask import request, make_response, jsonify
-from flask_jwt_extended import create_access_token
+from flask import request, make_response
+from flask_jwt_extended import create_access_token, current_user, jwt_required
+from werkzeug.security import generate_password_hash
 from datetime import timedelta
 from ..models import User
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 @auth.post('/register')
 def handle_register():
@@ -149,3 +153,45 @@ def handle_login():
 
         response.headers["Authorization"] = f"Bearer {auth_token}"
         return response, 200
+    
+
+
+@auth.post('/editprofile')
+@jwt_required()
+def handleEditProfile():
+    body = request.json
+
+    if body is None: 
+        response = {
+            "message": "invalid form"
+        }
+        return response, 400
+
+    user = User.query.get(current_user.id)
+    if user is None: 
+        response = {
+            "message": "user not found"
+        }
+        return response, 404
+    
+    email = body.get('email')
+    username = body.get('username')
+    password = body.get('password')
+
+    if email:
+        user.email = email
+    if username:
+        user.username = username
+    if password:
+        user.password = generate_password_hash(password, method='pbkdf2:sha256:260000')
+
+    user.update()
+
+    response = {
+        "message": "Profile updated",
+        "user_info": {
+            "email": user.email,
+            "username": user.username
+        },
+    }
+    return response, 200
