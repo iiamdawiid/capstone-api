@@ -53,6 +53,7 @@ def handle_delete_max(save_id):
         response = {
             "message": "saved max does not exist"
         }
+        return response, 404
     
     if saved_max.saved_by != current_user.id:
         response = {
