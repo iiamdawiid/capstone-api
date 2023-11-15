@@ -56,3 +56,13 @@ def handle_food_delete(save_id):
         "message": "saved foods successfully deleted"
     }
     return response, 200
+
+@f.get('/saved_foods')
+@jwt_required()
+def handle_get_saved_foods():
+    saved_foods = FoodNutrition.query.filter_by(saved_by=current_user.id).all()
+    response = {
+        "message": "user's saved foods",
+        "saved_foods": [food.to_response() for food in saved_foods]
+    }
+    return response, 200

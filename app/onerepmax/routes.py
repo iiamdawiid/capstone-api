@@ -66,3 +66,13 @@ def handle_delete_max(save_id):
         "message": "saved max successfully deleted"
     }
     return response, 20
+
+@m.get('/saved_maxes')
+@jwt_required()
+def handle_get_saved_maxes():
+    saved_maxes = OneRepMax.query.filter_by(saved_by=current_user.id).all()
+    response = {
+        "message": "user's saved maxes",
+        "saved_maxes": [orm.to_response() for orm in saved_maxes]
+    }
+    return response, 200

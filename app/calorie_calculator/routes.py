@@ -65,4 +65,14 @@ def handle_calorie_delete(save_id):
     response = {
         "message": "saved calories successfully deleted"
     }
-    return response, 200 
+    return response, 200
+
+@c.get('/saved_calories')
+@jwt_required()
+def handle_get_saved_calories():
+    saved_calories = CalorieCalculator.query.filter_by(saved_by=current_user.id).all()
+    response = {
+        "message": "user's saved calories",
+        "saved_calories": [results.to_response() for results in saved_calories]
+    }
+    return response, 200
