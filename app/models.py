@@ -183,3 +183,46 @@ class OneRepMax(db.Model):
             "saved_at": self.saved_at,
             "saved_by": self.saved_by
         }
+    
+class FoodNutrition(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+    food_name = db.Column(db.String, nullable=False)
+    serving_size = db.Column(db.Integer, nullable=False)
+    calories = db.Column(db.Integer, nullable=False)
+    protein = db.Column(db.Integer, nullable=False)
+    fats = db.Column(db.Integer, nullable=False)
+    carbs = db.Column(db.Integer, nullable=False)
+
+    saved_at = db.Column(db.DateTime, default=datetime.utcnow)
+    saved_by = db.Column(db.String(64), db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, food_name, serving_size, calories, protein, fats, carbs, saved_by):
+        self.id = str(uuid4())
+        self.food_name = food_name
+        self.serving_size = serving_size
+        self.calories = calories
+        self.protein = protein
+        self.fats = fats
+        self.carbs = carbs
+        self.saved_by = saved_by
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def to_response(self):
+        return {
+            "id": self.id,
+            "food_name": self.food_name,
+            "serving_size": self.serving_size,
+            "calories": self.calories,
+            "protein": self.protein,
+            "fats": self.fats,
+            "carbs": self.carbs,
+            "saved_at": self.saved_at,
+            "saved_by": self.saved_by
+        }

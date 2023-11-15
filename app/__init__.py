@@ -33,3 +33,6 @@ app.register_blueprint(calorie_calculator_blueprint)
 
 from .onerepmax import onerepmax_blueprint
 app.register_blueprint(onerepmax_blueprint)
+
+from .food_nutrition import food_nutrition_blueprint
+app.register_blueprint(food_nutrition_blueprint)
