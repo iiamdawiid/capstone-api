@@ -65,7 +65,7 @@ def handle_delete_max(save_id):
     response = {
         "message": "saved max successfully deleted"
     }
-    return response, 20
+    return response, 200
 
 @m.get('/saved_maxes')
 @jwt_required()
