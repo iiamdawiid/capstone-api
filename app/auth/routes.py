@@ -3,7 +3,7 @@ from flask import request, make_response
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
 from datetime import timedelta
-from ..models import User, CalorieCalculator, OneRepMax
+from ..models import User, CalorieCalculator, OneRepMax, FoodNutrition
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -177,13 +177,14 @@ def handle_edit_profile():
     delete_profile = body.get('delete_profile')
 
     if delete_profile:
-        saved_calories = CalorieCalculator.query.filter_by(saved_by=current_user.id).all()
-        saved_maxes = OneRepMax.query.filter_by(saved_by=current_user.id).all()
-        if saved_calories:
-            saved_calories.delete()
-        if saved_maxes:
-            saved_maxes.delete()
+        CalorieCalculator.query.filter_by(saved_by=current_user.id).delete()
+        OneRepMax.query.filter_by(saved_by=current_user.id).delete()
+        FoodNutrition.query.filter_by(saved_by=current_user.id).delete()
+
+        db.session.commit()
+
         user.delete()
+
         response = {
             "message": "user successfully deleted"
         }
@@ -211,44 +212,3 @@ def handle_edit_profile():
             },
         }
         return response, 200
-        
-    # body = request.json
-
-    # if body is None: 
-    #     response = {
-    #         "message": "invalid form"
-    #     }
-    #     return response, 400
-
-    # user = User.query.get(current_user.id)
-    # if user is None: 
-    #     response = {
-    #         "message": "user not found"
-    #     }
-    #     return response, 404
-    
-    # email = body.get('email')
-    # username = body.get('username')
-    # password = body.get('password')
-    # delete_profile = body.get('delete_profile')
-
-    # if email:
-    #     user.email = email
-    # if username:
-    #     user.username = username
-    # if password:
-    #     user.password = generate_password_hash(password, method='pbkdf2:sha256:260000')
-    # if delete_profile:
-    #     saved_calories = CalorieCalculator.query.filter_by(saved_by=current_user.id).all()
-    #     saved_maxes = OneRepMax.query.filter_by(saved_by=current_user.id).all()
-
-    # user.update()
-
-    # response = {
-    #     "message": "Profile updated",
-    #     "user_info": {
-    #         "email": user.email,
-    #         "username": user.username
-    #     },
-    # }
-    # return response, 200
